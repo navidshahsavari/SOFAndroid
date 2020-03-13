@@ -37,7 +37,7 @@
           </b-button-group>
         </div>
         <hr>
-        <b-card v-for="answer in sortedAnswers" :class="{answer:true, negative_score: answer.score<0}"
+        <b-card v-for="answer in sortedAnswers" :key="answer.post_id" :class="{answer:true, negative_score: answer.score<0}"
                 :title="answer.score">
           <b-card-body>
             <div v-html="answer.body" class="highlight_here"></div>

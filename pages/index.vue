@@ -1,13 +1,15 @@
 <template>
-  <b-container fluid>
+  <b-container fluid class="sidebar">
     <b-row>
-      <b-col cols="4">
+      <b-col md="4" xs="12" :class="{open: !open, section:true}">
         <sidebar v-if="!error && !loading" @question_selected="select_question" :questions_new="question_new"
                  :questions_votes="question_vote"></sidebar>
         <b-spinner v-else-if="loading"></b-spinner>
         <b-alert show variant="danger" v-else-if="error">{{error}}</b-alert>
       </b-col>
-      <b-col cols="7">
+      <b-col md="7" xs="12" :class="{open: open, section:true}">
+        <b-icon-arrow-left-short font-scale="4" style="cursor: pointer" class="section-close-icon"
+                                 @click="open=false"></b-icon-arrow-left-short>
         <question :question="selected_question"></question>
       </b-col>
     </b-row>
@@ -17,11 +19,13 @@
 <script>
     import Sidebar from '~/components/sidebar.vue'
     import Question from '~/components/question.vue'
+    import {BIconArrowLeftShort} from 'bootstrap-vue'
 
     export default {
         components: {
             Sidebar,
             Question,
+            BIconArrowLeftShort,
         },
         data: () => ({
             question_new: [],
@@ -29,6 +33,7 @@
             selected_question: null,
             loading: 0,
             error: false,
+            open: false,
         }),
         mounted: async function () {
             try {
@@ -43,7 +48,7 @@
 
                 if (votes.error_id || newest.error_id) {
                     this.error = votes.error_message || newest.error_message
-                }else{
+                } else {
                     this.error = false
                     this.question_vote = votes.items
                     this.question_new = newest.items
@@ -54,6 +59,7 @@
         },
         methods: {
             select_question (question) {
+                this.open = true
                 this.selected_question = question
             },
         },
@@ -61,5 +67,21 @@
 </script>
 
 <style>
+  .section-close-icon {
+    display: none !important;
+  }
 
+  @media screen and (max-width: 768px) {
+    .section-close-icon {
+      display: inline-block !important;
+    }
+
+    .sidebar .section:not(.open) {
+      display: none;
+    }
+  }
+
+  .list-group-item {
+    overflow-wrap: break-word;
+  }
 </style>

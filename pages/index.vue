@@ -5,7 +5,7 @@
         <sidebar @question_selected="select_question" :questions_new="question_new"
                  :questions_votes="question_vote"></sidebar>
       </b-col>
-      <b-col>
+      <b-col cols="7">
         <question :question="selected_question"></question>
       </b-col>
     </b-row>

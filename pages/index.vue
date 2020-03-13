@@ -1,72 +1,45 @@
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        sofandroid
-      </h1>
-      <h2 class="subtitle">
-        Stackoverflow top/newest android questions overview
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
-  </div>
+  <b-container fluid>
+    <b-row>
+      <b-col cols="4">
+        <sidebar @question_selected="select_question" :questions_new="question_new" :questions_votes="question_vote"></sidebar>
+      </b-col>
+      <b-col>
+        <question :question="selected_question"></question>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+    import Sidebar from '~/components/sidebar.vue'
+    import Question from '~/components/question.vue'
 
-export default {
-  components: {
-    Logo
-  }
-}
+    export default {
+        components: {
+            Sidebar,
+            Question,
+        },
+        data: () => ({
+            question_new: [],
+            question_vote: [],
+            selected_question: null,
+        }),
+        mounted: async function () {
+            let votes = await fetch('https://api.stackexchange.com/2.2/search?pagesize=10&order=desc&sort=votes&tagged=android&site=stackoverflow')
+            let newest = await fetch('https://api.stackexchange.com/2.2/search?pagesize=10&order=desc&sort=creation&tagged=android&site=stackoverflow')
+
+            this.question_vote = (await votes.json()).items
+            this.question_new = (await newest.json()).items
+        },
+        methods: {
+            select_question (question) {
+                this.selected_question = question
+            },
+        },
+    }
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
 </style>

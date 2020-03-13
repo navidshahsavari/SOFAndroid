@@ -6,7 +6,7 @@
                          :key="question.question_id"
                          :active="question.question_id === selected" v-html="question.title"></b-list-group-item>
     </b-list-group>
-    <h3>Most Voted Questions</h3>
+    <h3 style="margin-top: 1em">Most Voted Questions</h3>
     <b-list-group>
       <b-list-group-item class="pointer" @click="selectQuestion(question)" v-for="question in questions_votes"
                          :key="question.question_id"
